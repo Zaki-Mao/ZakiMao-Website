@@ -1,6 +1,6 @@
 import streamlit as st
 
-# 1. 页面基础配置
+# 1. 页面配置
 st.set_page_config(
     page_title="Zaki Mao | Portfolio",
     page_icon="⚫",
@@ -8,153 +8,160 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. 自定义 CSS (核心部分：复刻 Grain Archive 的视觉风格)
+# ==========================================
+# 👇 在这里替换你的图片链接 (留空处)
+# ==========================================
+# 建议图片比例 4:3 或 16:9，分辨率 1200px 以上效果最佳
+IMG_FOTOZAKI = "https://images.unsplash.com/photo-1542038784424-48ed38935839?q=80&w=1200&auto=format&fit=crop"  # 替换为 FotoZaki 封面图
+IMG_SPOTMARK = "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1200&auto=format&fit=crop"  # 替换为 SpotMark 界面图
+IMG_LOVEMARK = "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1200&auto=format&fit=crop"  # 替换为 LoveMark 概念图
+IMG_BEHOLMES = "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop"  # 替换为 BeHolmes 封面图
+# ==========================================
+
+# 2. 自定义 CSS (核心视觉升级)
 st.markdown("""
 <style>
-    /* 全局设置：深色背景，无衬线字体 */
+    /* 全局深色模式 */
     .stApp {
-        background-color: #0e0e0e;
+        background-color: #050505;
         color: #ffffff;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     
-    /* 隐藏 Streamlit 默认的 Header 和 Footer */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
+    /* 隐藏默认元素 */
+    #MainMenu, footer, header {visibility: hidden;}
 
-    /* 顶部导航栏样式 */
+    /* 顶部导航 */
     .nav-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 0;
-        border-bottom: 1px solid #333;
-        margin-bottom: 40px;
+        padding: 30px 0;
+        border-bottom: 1px solid #222;
+        margin-bottom: 60px;
     }
     .logo {
         font-size: 24px;
-        font-weight: bold;
+        font-weight: 800;
         border: 2px solid white;
         border-radius: 50%;
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-    .nav-links {
-        display: flex;
-        gap: 15px;
-    }
     .nav-pill {
-        padding: 8px 20px;
-        border-radius: 50px;
+        padding: 8px 24px;
+        border-radius: 100px;
         text-decoration: none;
-        color: black !important;
-        font-weight: bold;
+        color: #000 !important;
+        font-weight: 700;
         font-size: 14px;
+        margin-left: 10px;
         transition: transform 0.2s;
     }
     .nav-pill:hover { transform: scale(1.05); }
-    
-    /* 颜色类 */
-    .bg-orange { background-color: #ff6b00; }
-    .bg-green { background-color: #2bd464; }
-    .bg-blue { background-color: #8faaff; }
+    .bg-orange { background-color: #FF5C00; }
+    .bg-green { background-color: #00D26A; }
+    .bg-blue { background-color: #5C95FF; }
 
-    /* Hero 大标题样式 */
+    /* Hero 标题 (横向排版) */
     .hero-title {
-        font-size: clamp(60px, 10vw, 150px); /* 响应式字体 */
+        font-size: clamp(60px, 11vw, 180px); /* 响应式超大字 */
         font-weight: 900;
-        line-height: 0.85;
-        letter-spacing: -2px;
-        margin-bottom: 30px;
-        text-transform: uppercase;
+        line-height: 0.9;
+        letter-spacing: -0.04em;
+        margin-bottom: 10px;
+        white-space: nowrap; /* 强制不换行 */
+    }
+    .hero-subtitle {
+        font-size: 20px;
+        color: #888;
+        max-width: 600px;
+        margin-bottom: 80px;
     }
 
-    /* 项目卡片样式 (Grid) */
+    /* 项目卡片 - 悬浮特效核心代码 */
     .project-card {
         position: relative;
-        margin-bottom: 20px;
-        cursor: pointer;
-        transition: opacity 0.3s;
-    }
-    .project-card:hover { opacity: 0.9; }
-    .project-img {
         width: 100%;
-        height: 400px;
-        object-fit: cover;
-        border-radius: 4px; /* 轻微圆角 */
-        filter: grayscale(20%); /* 稍微降低饱和度以符合风格 */
-    }
-    .project-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        padding: 15px;
-        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-        color: white;
-    }
-    .project-title {
-        font-size: 18px;
-        font-weight: bold;
-        margin: 0;
-    }
-    .project-meta {
-        font-size: 12px;
-        opacity: 0.8;
-        margin-top: 5px;
-    }
-
-    /* 列表区域样式 (Cinema Selects 风格) */
-    .list-header {
-        font-size: 60px;
-        font-weight: 800;
-        letter-spacing: -2px;
-        margin-top: 80px;
+        height: 450px; /* 固定高度，确保整齐 */
+        overflow: hidden;
+        border-radius: 8px;
         margin-bottom: 40px;
-        line-height: 0.9;
-    }
-    .list-row {
-        display: flex;
-        border-top: 1px solid #333;
-        padding: 20px 0;
-        align-items: center;
-        transition: background 0.3s;
-    }
-    .list-row:hover { background-color: #1a1a1a; }
-    .col-1 { width: 30%; font-weight: bold; font-size: 18px; }
-    .col-2 { width: 15%; color: #888; }
-    .col-3 { width: 55%; text-align: right; }
-    a.row-link { color: white; text-decoration: none; display: block; width: 100%; }
-
-    /* Footer */
-    .footer-section {
-        margin-top: 100px;
-        padding: 60px 0;
-        border-top: 1px solid #333;
-        text-align: center;
+        cursor: pointer;
     }
     
-    /* 按钮基础样式覆盖 */
-    div.stButton > button {
+    /* 背景图片样式 */
+    .project-img {
         width: 100%;
-        border-radius: 0;
-        background-color: transparent;
-        border: 1px solid #333;
-        color: white;
-        padding: 20px;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    
+    /* 悬浮遮罩层 */
+    .project-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85); /* 深色遮罩 */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* 垂直居中 */
+        align-items: center; /* 水平居中 */
+        text-align: center;
+        opacity: 0; /* 默认隐藏 */
+        transition: opacity 0.4s ease;
+        padding: 40px;
+    }
+    
+    /* 鼠标悬停时的状态 */
+    .project-card:hover .project-overlay { opacity: 1; }
+    .project-card:hover .project-img { transform: scale(1.05); } /* 图片微放大 */
+
+    .overlay-title {
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        color: #fff;
+    }
+    .overlay-desc {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #ccc;
+        max-width: 80%;
+    }
+    .overlay-tag {
+        margin-top: 20px;
+        font-size: 12px;
+        border: 1px solid #444;
+        padding: 6px 16px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* 底部 Footer */
+    .footer-section {
+        margin-top: 120px;
+        padding-top: 40px;
+        border-top: 1px solid #222;
+        text-align: center;
+        color: #555;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# 3. 顶部导航栏 (HTML注入)
+# 3. 导航栏
 st.markdown("""
     <div class="nav-container">
         <div class="logo">ZM</div>
-        <div class="nav-links">
+        <div>
             <a href="#" class="nav-pill bg-orange">Home</a>
             <a href="#projects" class="nav-pill bg-green">Projects</a>
             <a href="#about" class="nav-pill bg-blue">About</a>
@@ -162,108 +169,72 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# 4. Hero 区域 (大标题)
-st.markdown('<div class="hero-title">Zaki<br>Mao.</div>', unsafe_allow_html=True)
-st.markdown("Independent developer & visual designer based in the cloud.")
+# 4. Hero 区域 (ZAKI MAO 横排)
+st.markdown('<div class="hero-title">ZAKI MAO.</div>', unsafe_allow_html=True)
+st.markdown('<div class="hero-subtitle">Independent Developer, Visual Designer & PM.<br>Based in the cloud, building for the future.</div>', unsafe_allow_html=True)
 
-st.markdown("---")
+# 5. 项目网格 (Project Grid)
+st.markdown('<div id="projects"></div>', unsafe_allow_html=True)
 
-# 5. 项目展示区域 (Grid System)
-st.markdown('<div id="projects"></div>', unsafe_allow_html=True) # 锚点
-
-# 定义你的项目数据
+# 定义你的真实项目数据
 projects = [
     {
         "name": "FotoZaki",
-        "category": "Photography / Visuals",
-        "year": "2024",
-        "img": "https://images.unsplash.com/photo-1542038784424-48ed38935839?q=80&w=1000&auto=format&fit=crop",
-        "link": "https://fotozaki.com" # 假设链接
+        "desc": "我的街头摄影数字档案。记录城市角落的光影与瞬间，一个纯粹的视觉日记。",
+        "tag": "Photography / Website",
+        "link": "https://fotozaki.com",
+        "img": IMG_FOTOZAKI
+    },
+    {
+        "name": "SpotMark",
+        "desc": "专为产品经理打造的 Figma 插件。让设计稿与项目管理无缝对接，提升交付效率。",
+        "tag": "Figma Plugin / Efficiency",
+        "link": "#", # 填入你的插件链接
+        "img": IMG_SPOTMARK
+    },
+    {
+        "name": "LoveMark",
+        "desc": "基于 Coze 平台的 AI 情感 Agent。当逻辑无法解决问题时，它为你提供感性的建议。",
+        "tag": "AI Agent / LLM",
+        "link": "#", # 填入你的 Coze 链接
+        "img": IMG_LOVEMARK
     },
     {
         "name": "BeHolmes",
-        "category": "Data Analysis / Detective",
-        "year": "2025",
-        "img": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop",
-        "link": "https://beholmes.com" # 假设链接
-    },
-    {
-        "name": "Grain Archive",
-        "category": "Design System",
-        "year": "2023",
-        "img": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop",
-        "link": "#"
-    },
-    {
-        "name": "System Zero",
-        "category": "Infrastructure",
-        "year": "2024",
-        "img": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop",
-        "link": "#"
+        "desc": "数据侦探分析工具。在海量信息的噪音中寻找信号，Web3 链上数据的可视化探索。",
+        "tag": "Data Analysis / Web3",
+        "link": "https://beholmes.com",
+        "img": IMG_BEHOLMES
     }
 ]
 
-# 创建 2列布局
 col1, col2 = st.columns(2)
 
-# 渲染项目卡片函数
-def render_project_card(project):
-    # 使用 HTML 创建可点击的卡片效果
-    card_html = f"""
+def render_card(project):
+    return f"""
     <a href="{project['link']}" target="_blank" style="text-decoration:none;">
         <div class="project-card">
             <img src="{project['img']}" class="project-img">
             <div class="project-overlay">
-                <p class="project-title">{project['name']}</p>
-                <div style="display:flex; justify-content:space-between; margin-top:5px;">
-                    <span class="project-meta">{project['category']}</span>
-                    <span class="project-meta">{project['year']}</span>
-                </div>
+                <div class="overlay-title">{project['name']}</div>
+                <div class="overlay-desc">{project['desc']}</div>
+                <div class="overlay-tag">{project['tag']}</div>
             </div>
         </div>
     </a>
     """
-    st.markdown(card_html, unsafe_allow_html=True)
 
-# 分配卡片到左右两列
 with col1:
-    render_project_card(projects[0]) # FotoZaki
-    render_project_card(projects[2])
+    st.markdown(render_card(projects[0]), unsafe_allow_html=True) # FotoZaki
+    st.markdown(render_card(projects[2]), unsafe_allow_html=True) # LoveMark
 
 with col2:
-    render_project_card(projects[1]) # BeHolmes
-    render_project_card(projects[3])
+    st.markdown(render_card(projects[1]), unsafe_allow_html=True) # SpotMark
+    st.markdown(render_card(projects[3]), unsafe_allow_html=True) # BeHolmes
 
-# 6. 列表/详细信息区域 (复刻 Figma 中的 "Cinema Selects")
-st.markdown('<div class="list-header" id="about">Selected<br>Works</div>', unsafe_allow_html=True)
-
-# 定义列表数据
-works = [
-    {"title": "Interactive Python Dashboards", "year": "2024", "desc": "Streamlit & Data Viz"},
-    {"title": "Neural Network Art", "year": "2023", "desc": "Generative AI"},
-    {"title": "Minimalist Web Design", "year": "2025", "desc": "UI/UX Research"},
-    {"title": "Open Source Contributions", "year": "2022", "desc": "GitHub Maintainer"},
-]
-
-# 渲染列表
-for work in works:
-    st.markdown(f"""
-    <div class="list-row">
-        <div class="col-1">{work['title']}</div>
-        <div class="col-2">{work['year']}</div>
-        <div class="col-3">{work['desc']} ↗</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# 7. 底部 Footer
+# 6. 底部 Footer
 st.markdown("""
     <div class="footer-section">
-        <h1 style="font-size: 80px; margin:0; line-height:1;">ZAKIMAO</h1>
-        <p style="color:#666; margin-top:20px;">© 2026 Zaki Mao. All rights reserved.</p>
-        <div style="margin-top:30px;">
-            <a href="#" style="color:white; margin:0 10px;">Email</a>
-            <a href="#" style="color:white; margin:0 10px;">GitHub</a>
-            <a href="#" style="color:white; margin:0 10px;">Twitter</a>
-        </div>
+        <p>DESIGNED & DEVELOPED BY ZAKI MAO © 2026</p>
     </div>
 """, unsafe_allow_html=True)
